@@ -45,6 +45,7 @@ module.exports = function(server, db) {
   server.post('/dep', (req, res, next) => {
     const dep = req.body;
     dep._id = uuid();
+    dep._rel.push(dep._id);
     depDB.insertOne(dep).then(() => {
       res.status(201);
       res.send(dep);
@@ -55,7 +56,6 @@ module.exports = function(server, db) {
 
   server.put('/dep/:depid', (req, res, next) => {
     const dep = req.body;
-    delete dep['_id'];
     depDB.findOneAndUpdate({ _id: req.params['depid'] || '' }, { $set: dep }).then(result => {
       res.status(result.ok ? 201 : 404);
       res.send(result.ok ? dep : undefined);

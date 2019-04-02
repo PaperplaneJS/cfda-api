@@ -46,7 +46,6 @@ module.exports = function(server, db) {
 
   server.put('/plan/:planid', (req, res, next) => {
     const plan = req.body;
-    delete plan['_id'];
     planDB.findOneAndUpdate({ _id: req.params['planid'] || '' }, { $set: plan }).then(result => {
       res.status(result.ok ? 201 : 404);
       res.send(result.ok ? plan : undefined);

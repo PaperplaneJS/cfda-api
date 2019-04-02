@@ -2,7 +2,7 @@ module.exports = function(server, db) {
   const lawDB = db.collection('law');
 
   server.get('/law', (req, res, next) => {
-    lawDB.find({}).toArray().then(result => {
+    lawDB.find({}, { content: 0 }).toArray().then(result => {
       res.send(result);
     });
 
@@ -10,7 +10,7 @@ module.exports = function(server, db) {
   });
 
   server.get(`/law/:lawid`, (req, res, next) => {
-    lawDB.findOne({ _id: req.params['lawid'] || '' }).then(result => {
+    lawDB.findOne({ _id: req.params['lawid'] || '' }, { content: 0 }).then(result => {
       if (result) {
         res.send(result);
       } else {
@@ -35,7 +35,6 @@ module.exports = function(server, db) {
 
   server.put('/law/:lawid', (req, res, next) => {
     const law = req.body;
-    delete law['_id'];
     lawDB.findOneAndUpdate({ _id: law.params['lawid'] || '' }, { $set: law }).then(result => {
       res.status(result.ok ? 201 : 404);
       res.send(result.ok ? law : undefined);

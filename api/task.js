@@ -38,7 +38,6 @@ module.exports = function(server, db) {
 
   server.put(`/plan/:planid/task/:taskid`, (req, res, next) => {
     const task = req.body;
-    delete task['_id'];
     taskDB.findOneAndUpdate({ _id: req.params['taskid'] || '', _plan: req.params['taskid'] || '' }, { $set: task }).then(result => {
       res.status(result.ok ? 201 : 404);
       res.send(result.ok ? task : undefined);

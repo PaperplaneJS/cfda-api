@@ -2,7 +2,7 @@ module.exports = function(server, db) {
   const templateDB = db.collection('template');
 
   server.get('/template', (req, res, next) => {
-    templateDB.find({}).toArray().then(result => {
+    templateDB.find({}, { projection: { pwd: 0 } }).toArray().then(result => {
       res.send(result);
     });
 
@@ -30,7 +30,6 @@ module.exports = function(server, db) {
 
   server.put('/template/:templateid', (req, res, next) => {
     const template = req.body;
-    delete template['_id'];
     templateDB.findOneAndUpdate({ _id: req.params['templateid'] || '' }, { $set: template }).then(result => {
       res.status(result.ok ? 201 : 404);
       res.send(result.ok ? template : undefined);

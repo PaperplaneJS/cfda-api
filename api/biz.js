@@ -37,7 +37,6 @@ module.exports = function(server, db) {
 
   server.put('/biz/:bizid', (req, res, next) => {
     const biz = req.body;
-    delete biz['_id'];
     bizDB.findOneAndUpdate({ _id: req.params['bizid'] || '' }, { $set: biz }).then(result => {
       res.status(result.ok ? 201 : 404);
       res.send(result.ok ? biz : undefined);
