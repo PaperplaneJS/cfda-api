@@ -2,7 +2,7 @@ module.exports = function(server, db) {
   const lawDB = db.collection('law');
 
   server.get('/law', (req, res, next) => {
-    lawDB.find({}, { content: 0 }).toArray().then(result => {
+    lawDB.find({}, { projection: { content: 0 } }).toArray().then(result => {
       res.send(result);
     });
 
@@ -10,7 +10,7 @@ module.exports = function(server, db) {
   });
 
   server.get(`/law/:lawid`, (req, res, next) => {
-    lawDB.findOne({ _id: req.params['lawid'] || '' }, { content: 0 }).then(result => {
+    lawDB.findOne({ _id: req.params['lawid'] || '' }).then(result => {
       if (result) {
         res.send(result);
       } else {

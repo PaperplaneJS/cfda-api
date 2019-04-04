@@ -1,17 +1,17 @@
 const uuid = require('./_uuid');
 
 function cascadeDepList(deps) {
-  function handleCascade(parent, deep = 0) {
+  function handleCascade(parent) {
     const children = deps.filter(dep =>
-      dep._rel.length === parent._rel.length + 1 && dep._rel[deep] === parent._id
+      dep._rel.length === parent._rel.length + 1 && dep._rel.includes(parent._id)
     );
     if (children.length > 0) {
       parent.children = children;
-      parent.children.forEach(t => handleCascade(t, deep + 1));
+      parent.children.forEach(t => handleCascade(t));
     }
   };
-
-  const cascade = deps.filter(dep => dep._rel.length <= 1);
+  const minLength = Math.min(...deps.map(t => t._rel.length));
+  const cascade = deps.filter(dep => dep._rel.length <= minLength);
   deps.forEach(t => handleCascade(t));
 
   return cascade;
@@ -22,7 +22,7 @@ module.exports = function(server, db) {
 
   server.get('/dep', (req, res, next) => {
     depDB.find({}).toArray().then(result => {
-      const isCascade = req.query['type'] && req.query['type'] === 'cascade'
+      const isCascade = req.query['cascade'];
       res.send(isCascade ? cascadeDepList(result) : result);
     })
 
@@ -30,13 +30,22 @@ module.exports = function(server, db) {
   });
 
   server.get(`/dep/:depid`, (req, res, next) => {
-    depDB.findOne({ _id: req.params['depid'] || '' }).then(result => {
-      if (result) {
-        res.send(result);
-      } else {
-        res.status(404);
-        res.send();
-      }
+    const isCascade = req.query['cascade'];
+    const isUnder = req.query['under'];
+
+    const method = isUnder ? 'find' : 'findOne';
+    const cond = isUnder ? '_rel' : '_id';
+
+    let queryResult = depDB[method]({
+      [cond]: req.params['depid']
+    });
+
+    if (isUnder) {
+      queryResult = queryResult.toArray();
+    }
+
+    queryResult.then(result => {
+      res.send(isCascade && isUnder ? cascadeDepList(result) : result);
     });
 
     return next();

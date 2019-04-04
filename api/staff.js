@@ -3,16 +3,26 @@ const sha256 = require('./_sha256');
 
 module.exports = function(server, db) {
   const staffDB = db.collection('staff');
+  const depDB = db.collection('department');
 
   server.get('/staff', (req, res, next) => {
     let cond = {};
     if (req.query['dep']) {
       cond['dep'] = req.query['dep'];
     }
-
-    staffDB.find(cond, { projection: { pwd: 0 } }).toArray().then(result => {
-      res.send(result);
-    })
+    if (req.query['dep'] && req.query['under']) {
+      depDB.find({ _rel: req.query['dep'] }).toArray().then(result => {
+        return result.map(t => t._id);
+      }).then(deps => {
+        staffDB.find({ dep: { $in: deps } }, { projection: { pwd: 0 } }).toArray().then(result => {
+          res.send(result);
+        })
+      })
+    } else {
+      staffDB.find(cond, { projection: { pwd: 0 } }).toArray().then(result => {
+        res.send(result);
+      })
+    }
 
     return next();
   });
