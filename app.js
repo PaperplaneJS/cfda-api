@@ -1,5 +1,3 @@
-const path = require('path');
-const fs = require('fs');
 const restify = require('restify');
 const mongodbClient = require('mongodb').MongoClient;
 const sessions = require('client-sessions');

@@ -1,3 +1,5 @@
+const uuid = require('./_uuid.js');
+
 module.exports = function(server, db) {
   const lawDB = db.collection('law');
 
@@ -35,7 +37,7 @@ module.exports = function(server, db) {
 
   server.put('/law/:lawid', (req, res, next) => {
     const law = req.body;
-    lawDB.findOneAndUpdate({ _id: law.params['lawid'] || '' }, { $set: law }).then(result => {
+    lawDB.findOneAndUpdate({ _id: req.params['lawid'] || '' }, { $set: law }).then(result => {
       res.status(result.ok ? 201 : 404);
       res.send(result.ok ? law : undefined);
     })
