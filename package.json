@@ -4,14 +4,22 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "ser": "node app.js"
+    "server": "node app-loc.js",
+    "webpack": "webpack && node ./dist/dist.js",
+    "build": "webpack"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "client-sessions": "^0.8.0",
     "mongodb": "^3.2.2",
     "restify": "^8.2.0",
     "restify-cors-middleware": "^1.1.1"
+  },
+  "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1",
+    "webpack-node-externals": "^1.7.2"
   }
 }

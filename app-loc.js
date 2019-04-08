@@ -43,15 +43,21 @@ dbClient.connect().then(() => {
       }
     })
 
-    const context = require.context('./api/', true, /\/[^_].*\.js$/);
-    context.keys().forEach(key => {
-      let s = context(key);
-      console.log('api on:' + key);
-      s(server, db);
-    })
+    initPath('api');
 
     server.listen('9000', 'localhost', function() {
       console.log('%s begin.', server.name);
     })
+
+    function initPath(dir) {
+      fs.readdirSync(path.join(__dirname, dir)).forEach(item => {
+        let isDir = fs.statSync(path.join(__dirname, dir, item)).isDirectory();
+        if (isDir) {
+          initPath(path.join(dir, item))
+        } else if (!item.startsWith('_') && item.endsWith('.js')) {
+          require(path.join(__dirname, dir, item))(server, db);
+        }
+      });
+    }
   })
 })
