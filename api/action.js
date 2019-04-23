@@ -13,6 +13,7 @@ module.exports = function(server, db) {
       if (result) {
         const staff = result;
         req['cfdaId'].staff = staff._id;
+        res.
         res.send(staff);
         staffDB.findOneAndUpdate({ _id: staff._id }, { $set: { lastLogin: new Date().toLocaleString() } });
 

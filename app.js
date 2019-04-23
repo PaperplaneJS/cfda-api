@@ -6,7 +6,7 @@ const corsMiddleware = require('restify-cors-middleware');
 const server = restify.createServer({ name: "cfda_ser" });
 
 const cors = corsMiddleware({
-  origins: ['http://127.0.0.1:8080', 'http://localhost:8080'],
+  origins: [/.*/],
   credentials: true
 });
 server.pre(cors.preflight);

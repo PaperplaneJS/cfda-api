@@ -11,5 +11,11 @@ module.exports = {
   externals: [
     nodeExternals()
   ],
-  mode: 'production'
+  mode: 'production',
+  module: {
+    rules: [{
+      test: /\.js$/,
+      use: ['babel-loader']
+    }]
+  }
 }
