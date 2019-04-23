@@ -1,4 +1,6 @@
-module.exports = function(server, db) {
+import uuid from '@/utils/uuid';
+
+export default function(server, db) {
   const planDB = db.collection('plan');
 
   server.get('/plan', (req, res, next) => {

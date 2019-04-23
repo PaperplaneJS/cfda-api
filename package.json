@@ -4,8 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "server": "node app-loc.js",
-    "webpack": "webpack && node ./dist/dist.js",
+    "dev": "webpack && node ./dist/dist.js",
     "build": "webpack"
   },
   "author": "",

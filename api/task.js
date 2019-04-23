@@ -1,4 +1,6 @@
-module.exports = function(server, db) {
+import uuid from '@/utils/uuid';
+
+export default function(server, db) {
   const taskDB = db.collection('task');
 
   server.get(`/plan/:planid/task`, (req, res, next) => {

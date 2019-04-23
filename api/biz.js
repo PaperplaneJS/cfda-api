@@ -1,6 +1,6 @@
-const uuid = require('./_uuid');
+import uuid from '@/utils/uuid';
 
-module.exports = function(server, db) {
+export default function(server, db) {
   const bizDB = db.collection('biz');
 
   server.get('/biz', (req, res, next) => {

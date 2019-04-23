@@ -41,7 +41,7 @@ dbClient.connect().then(() => {
       }
     })
 
-    const context = require.context('./api/', true, /\/[^_].*\.js$/);
+    const context = require.context('./api/', true, /\.js$/);
     context.keys().forEach(key => {
       let s = context(key);
       console.log('api on:' + key);

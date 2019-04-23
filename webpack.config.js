@@ -17,5 +17,10 @@ module.exports = {
       test: /\.js$/,
       use: ['babel-loader']
     }]
+  },
+  resolve: {
+    alias: {
+      '@': __dirname
+    }
   }
 }

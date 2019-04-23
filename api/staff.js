@@ -1,7 +1,7 @@
-const uuid = require('./_uuid');
-const sha256 = require('./_sha256');
+import uuid from '@/utils/uuid';
+import sha256 from '@/utils/sha256';
 
-module.exports = function(server, db) {
+export default function(server, db) {
   const staffDB = db.collection('staff');
   const depDB = db.collection('department');
 
