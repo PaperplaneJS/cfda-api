@@ -1,55 +1,48 @@
-const uuid = require('@/utils/uuid');
+import uuid from '@/utils/uuid';
 
-module.exports = function(server, db) {
+export default function(server, db) {
   const bizDB = db.collection('biz');
 
-  server.get('/biz', (req, res, next) => {
-    bizDB.find({}).toArray().then(result => {
-      res.send(result);
-    })
+  server.get('/biz', async (req, res, next) => {
+    const result = await bizDB.find({}).toArray();
+    res.send(result);
 
     return next();
   });
 
-  server.get(`/biz/:bizid`, (req, res, next) => {
-    bizDB.findOne({ _id: req.params['bizid'] }).then(result => {
-      if (result) {
-        res.send(result);
-      } else {
-        res.status(404);
-        res.send();
-      }
-    })
+  server.get(`/biz/:bizid`, async (req, res, next) => {
+    const result = await bizDB.findOne({ _id: req.params['bizid'] });
+    if (!result) {
+      res.status(404);
+    }
+    res.send(result);
 
     return next();
   });
 
-  server.post('/biz', (req, res, next) => {
-    const biz = req.body;
-    biz._id = uuid();
-    bizDB.insertOne(biz).then(() => {
-      res.status(201);
-      res.send(biz);
-    })
+  server.post('/biz', async (req, res, next) => {
+    const postBizInfo = req.body;
+    postBizInfo._id = uuid();
+    await bizDB.insertOne(postBizInfo);
+    res.status(201);
+    res.send(postBizInfo);
 
     return next();
   })
 
-  server.put('/biz/:bizid', (req, res, next) => {
-    const biz = req.body;
-    bizDB.findOneAndUpdate({ _id: req.params['bizid'] || '' }, { $set: biz }).then(result => {
-      res.status(result.ok ? 201 : 404);
-      res.send(result.ok ? biz : undefined);
-    })
+  server.put('/biz/:bizid', async (req, res, next) => {
+    const postBizInfo = req.body;
+    const result = await bizDB.findOneAndUpdate({ _id: req.params['bizid'] || '' }, { $set: postBizInfo });
+    res.status(result.ok ? 201 : 404);
+    res.send(result.ok ? postBizInfo : undefined);
 
     return next();
   })
 
-  server.del('/biz/:bizid', (req, res, next) => {
-    bizDB.deleteOne({ _id: req.params['bizid'] || '' }).then(() => {
-      res.status(204);
-      res.send();
-    })
+  server.del('/biz/:bizid', async (req, res, next) => {
+    await bizDB.deleteOne({ _id: req.params['bizid'] || '' });
+    res.status(204);
+    res.send();
 
     return next();
   })

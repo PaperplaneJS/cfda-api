@@ -1,4 +1,4 @@
-const uuid = require('@/utils/uuid');
+import uuid from '@/utils/uuid';
 
 function cascadeDepList(deps) {
   function handleCascade(parent) {
@@ -10,6 +10,7 @@ function cascadeDepList(deps) {
       parent.children.forEach(t => handleCascade(t));
     }
   };
+
   const minLength = Math.min(...deps.map(t => t._rel.length));
   const cascade = deps.filter(dep => dep._rel.length <= minLength);
   deps.forEach(t => handleCascade(t));
@@ -17,19 +18,18 @@ function cascadeDepList(deps) {
   return cascade;
 }
 
-module.exports = function(server, db) {
+export default function(server, db) {
   const depDB = db.collection('department');
 
-  server.get('/dep', (req, res, next) => {
-    depDB.find({}).toArray().then(result => {
-      const isCascade = req.query['cascade'];
-      res.send(isCascade ? cascadeDepList(result) : result);
-    })
+  server.get('/dep', async (req, res, next) => {
+    const result = await depDB.find({}).toArray();
+    const isCascade = req.query['cascade'];
+    res.send(isCascade ? cascadeDepList(result) : result);
 
     return next();
   });
 
-  server.get(`/dep/:depid`, (req, res, next) => {
+  server.get(`/dep/:depid`, async (req, res, next) => {
     const isCascade = req.query['cascade'];
     const isUnder = req.query['under'];
 
@@ -44,26 +44,25 @@ module.exports = function(server, db) {
       queryResult = queryResult.toArray();
     }
 
-    queryResult.then(result => {
-      res.send(isCascade && isUnder ? cascadeDepList(result) : result);
-    });
+    let result = await queryResult;
+    res.send(isCascade && isUnder ? cascadeDepList(result) : result);
 
     return next();
   });
 
-  server.post('/dep', (req, res, next) => {
-    const dep = req.body;
-    dep._id = uuid();
-    dep._rel.push(dep._id);
-    depDB.insertOne(dep).then(() => {
-      res.status(201);
-      res.send(dep);
-    })
+  server.post('/dep', async (req, res, next) => {
+    const postDepInfo = req.body;
+    postDepInfo._id = uuid();
+    postDepInfo._rel.push(postDepInfo._id);
+    await depDB.insertOne(postDepInfo);
+
+    res.status(201);
+    res.send(postDepInfo);
 
     return next();
   })
 
-  server.put('/dep/:depid', (req, res, next) => {
+  server.put('/dep/:depid', async (req, res, next) => {
     const dep = req.body;
     depDB.findOneAndUpdate({ _id: req.params['depid'] || '' }, { $set: dep }).then(result => {
       res.status(result.ok ? 201 : 404);
@@ -73,11 +72,10 @@ module.exports = function(server, db) {
     return next();
   })
 
-  server.del('/dep/:depid', (req, res, next) => {
-    depDB.deleteOne({ _id: req.params['depid'] || '' }).then(() => {
-      res.status(204);
-      res.send();
-    })
+  server.del('/dep/:depid', async (req, res, next) => {
+    await depDB.deleteOne({ _id: req.params['depid'] || '' });
+    res.status(204);
+    res.send();
 
     return next();
   })

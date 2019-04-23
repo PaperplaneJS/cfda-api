@@ -1,56 +1,50 @@
-const uuid = require('@/utils/uuid');
+import uuid from '@/utils/uuid';
 
-module.exports =  function(server, db) {
+export default function(server, db) {
   const lawDB = db.collection('law');
 
-  server.get('/law', (req, res, next) => {
-    lawDB.find({}, { projection: { content: 0 } }).toArray().then(result => {
-      res.send(result);
-    });
+  server.get('/law', async (req, res, next) => {
+    const result = await lawDB.find({}, { projection: { content: 0 } }).toArray();
+    res.send(result);
 
     return next();
   });
 
-  server.get(`/law/:lawid`, (req, res, next) => {
-    lawDB.findOne({ _id: req.params['lawid'] || '' }).then(result => {
-      if (result) {
-        res.send(result);
-      } else {
-        res.status(404);
-        res.send();
-      }
-    });
+  server.get(`/law/:lawid`, async (req, res, next) => {
+    const result = await lawDB.findOne({ _id: req.params['lawid'] || '' });
+    if (!result) {
+      res.status(404);
+    }
+    res.send(result);
 
     return next();
   });
 
-  server.post('/law', (req, res, next) => {
-    const law = req.body;
-    law._id = uuid();
-    lawDB.insertOne(law).then(() => {
-      res.status(201);
-      res.send(law);
-    })
+  server.post('/law', async (req, res, next) => {
+    const postLawInfo = req.body;
+    postLawInfo._id = uuid();
+
+    await lawDB.insertOne(postLawInfo);
+    res.status(201);
+    res.send(postLawInfo);
 
     return next();
   })
 
-  server.put('/law/:lawid', (req, res, next) => {
-    const law = req.body;
-    lawDB.findOneAndUpdate({ _id: req.params['lawid'] || '' }, { $set: law }).then(result => {
-      res.status(result.ok ? 201 : 404);
-      res.send(result.ok ? law : undefined);
-    })
+  server.put('/law/:lawid', async (req, res, next) => {
+    const postLawInfo = req.body;
+    const result = await lawDB.findOneAndUpdate({ _id: req.params['lawid'] || '' }, { $set: postLawInfo });
+    res.status(result.ok ? 201 : 404);
+    res.send(result.ok ? postLawInfo : undefined);
 
     return next();
   })
 
-  server.del('/law/:lawid', (req, res, next) => {
-    lawDB.deleteOne({ _id: req.params['lawid'] || '' }).then(() => {
-      res.status(204);
-      res.send();
-    })
-
+  server.del('/law/:lawid', async (req, res, next) => {
+    await lawDB.deleteOne({ _id: req.params['lawid'] || '' });
+    res.status(204);
+    res.send();
+    
     return next();
   })
 }

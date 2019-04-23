@@ -1,8 +1,9 @@
-const restify = require('restify');
-const mongodbClient = require('mongodb').MongoClient;
-const session = require('express-session');
-const corsMiddleware = require('restify-cors-middleware');
+import restify from 'restify';
+import mongodb from 'mongodb';
+import session from 'express-session';
+import corsMiddleware from 'restify-cors-middleware';
 
+const mongodbClient = mongodb.MongoClient;
 const server = restify.createServer({ name: SERVER_NAME });
 
 const cors = corsMiddleware({
@@ -17,38 +18,38 @@ server.use(restify.plugins.bodyParser());
 
 const dbClient = new mongodbClient(MONGODB_HOST, { useNewUrlParser: true });
 
-dbClient.connect().then(() => {
+dbClient.connect().then(async () => {
   const db = dbClient.db(DB_NAME);
-  db.collection('config').findOne({}).then(config => {
-    server.use(session({
-      secret: config.key,
-      resave: false,
-      saveUninitialized: true,
-      cookie: { httpOnly: false, domain: `.${SERVER_DOMAIN}` }
-    }))
+  const config = await db.collection('config').findOne({});
 
-    server.use(function(req, res, next) {
-      const freePath = ['/login', '/auth'];
+  server.use(session({
+    secret: config.key,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { httpOnly: false, domain: `.${SERVER_DOMAIN}` }
+  }))
 
-      if (freePath.includes(req.path()) || req.session.staff) {
-        return next()
+  server.use(function(req, res, next) {
+    const freePath = ['/login', '/auth'];
 
-      } else {
-        res.status(401);
-        res.send();
-      }
-    })
+    if (freePath.includes(req.path()) || req.session.staff) {
+      return next()
 
-    const context = require.context('./api/', true, /\.js$/);
-    context.keys().forEach(key => {
-      console.log('api on:' + key);
+    } else {
+      res.status(401);
+      res.send();
+    }
+  })
 
-      let s = context(key);
-      s(server, db);
-    })
+  const context = require.context('./api/', true, /\.js$/);
+  context.keys().forEach(key => {
+    console.log('api on:' + key);
 
-    server.listen(SERVER_PORT, DEPLOY_HOST, function() {
-      console.log(`server[${server.name}] is open on [${DEPLOY_HOST}:${SERVER_PORT}]`);
-    })
+    let serverAPI = context(key);
+    serverAPI.default(server, db);
+  })
+
+  server.listen(SERVER_PORT, DEPLOY_HOST, function() {
+    console.log(`server[${server.name}] is open on [${DEPLOY_HOST}:${SERVER_PORT}]`);
   })
 })

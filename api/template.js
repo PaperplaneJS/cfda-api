@@ -1,50 +1,46 @@
-const uuid = require('@/utils/uuid');
+import uuid from '@/utils/uuid';
 
-module.exports =  function(server, db) {
+export default function(server, db) {
   const templateDB = db.collection('template');
 
-  server.get('/template', (req, res, next) => {
-    templateDB.find({}, { projection: { pwd: 0 } }).toArray().then(result => {
-      res.send(result);
-    });
+  server.get('/template', async (req, res, next) => {
+    const result = await templateDB.find({}, { projection: { pwd: 0 } }).toArray();
+    res.send(result);
 
     return next();
   });
 
-  server.get(`/template/:templateid`, (req, res, next) => {
-    templateDB.findOne({ _id: req.params['templateid'] }).then(result => {
-      res.send(result);
-    });
+  server.get(`/template/:templateid`, async (req, res, next) => {
+    const result = await templateDB.findOne({ _id: req.params['templateid'] });
+    res.send(result);
 
     return next();
   });
 
-  server.post('/template', (req, res, next) => {
-    const template = req.body;
-    template._id = uuid();
-    templateDB.insertOne(template).then(() => {
-      res.status(201);
-      res.send(template);
-    })
+  server.post('/template', async (req, res, next) => {
+    const postTemplateInfo = req.body;
+    postTemplateInfo._id = uuid();
+
+    await templateDB.insertOne(postTemplateInfo);
+    res.status(201);
+    res.send(postTemplateInfo);
 
     return next();
   })
 
-  server.put('/template/:templateid', (req, res, next) => {
+  server.put('/template/:templateid', async (req, res, next) => {
     const template = req.body;
-    templateDB.findOneAndUpdate({ _id: req.params['templateid'] || '' }, { $set: template }).then(result => {
-      res.status(result.ok ? 201 : 404);
-      res.send(result.ok ? template : undefined);
-    })
+    const result = await templateDB.findOneAndUpdate({ _id: req.params['templateid'] || '' }, { $set: template });
+    res.status(result.ok ? 201 : 404);
+    res.send(result.ok ? template : undefined);
 
     return next();
   })
 
-  server.del('/template/:templateid', (req, res, next) => {
-    templateDB.deleteOne({ _id: req.params['templateid'] || '' }).then(() => {
-      res.status(204);
-      res.send();
-    })
+  server.del('/template/:templateid', async (req, res, next) => {
+    await templateDB.deleteOne({ _id: req.params['templateid'] || '' });
+    res.status(204);
+    res.send();
 
     return next();
   })

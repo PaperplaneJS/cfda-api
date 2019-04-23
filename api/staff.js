@@ -1,75 +1,68 @@
-const uuid = require('@/utils/uuid');
-const sha256 = require('@/utils/sha256');
+import uuid from '@/utils/uuid';
+import sha256 from '@/utils/sha256';
 
-module.exports =  function(server, db) {
+export default function(server, db) {
   const staffDB = db.collection('staff');
   const depDB = db.collection('department');
 
-  server.get('/staff', (req, res, next) => {
+  server.get('/staff', async (req, res, next) => {
     let cond = {};
     if (req.query['dep']) {
       cond['dep'] = req.query['dep'];
     }
     if (req.query['dep'] && req.query['under']) {
-      depDB.find({ _rel: req.query['dep'] }).toArray().then(result => {
-        return result.map(t => t._id);
-      }).then(deps => {
-        staffDB.find({ dep: { $in: deps } }, { projection: { pwd: 0 } }).toArray().then(result => {
-          res.send(result);
-        })
-      })
+      let deps = await depDB.find({ _rel: req.query['dep'] }).toArray();
+      deps = deps.map(t => t._id);
+
+      let result = await staffDB.find({ dep: { $in: deps } }, { projection: { pwd: 0 } }).toArray();
+      res.send(result);
+
     } else {
-      staffDB.find(cond, { projection: { pwd: 0 } }).toArray().then(result => {
-        res.send(result);
-      })
+      const result = await staffDB.find(cond, { projection: { pwd: 0 } }).toArray();
+      res.send(result);
     }
 
     return next();
   });
 
-  server.get(`/staff/:staffid`, (req, res, next) => {
-    staffDB.findOne({ _id: req.params['staffid'] }, { projection: { pwd: 0 } }).then(result => {
-      if (result) {
-        res.send(result);
-      } else {
-        res.status(404);
-        res.send();
-      }
-    })
+  server.get(`/staff/:staffid`, async (req, res, next) => {
+    const result = await staffDB.findOne({ _id: req.params['staffid'] }, { projection: { pwd: 0 } });
+    if (!result) {
+      res.status(404);
+    }
+    res.send(result);
 
     return next();
   });
 
-  server.post('/staff', (req, res, next) => {
-    const staff = req.body;
-    staff._id = uuid();
-    staff.pwd = sha256(staff.pwd);
-    staffDB.insertOne(staff).then(() => {
-      res.status(201);
-      res.send(staff);
-    })
+  server.post('/staff', async (req, res, next) => {
+    const postStaffInfo = req.body;
+    postStaffInfo._id = uuid();
+    postStaffInfo.pwd = sha256(postStaffInfo.pwd);
+
+    await staffDB.insertOne(postStaffInfo);
+    res.status(201);
+    res.send(postStaffInfo);
 
     return next();
   })
 
-  server.put('/staff/:staffid', (req, res, next) => {
+  server.put('/staff/:staffid', async (req, res, next) => {
     const staff = req.body;
     if (staff.pwd) {
       staff.pwd = sha256(staff.pwd);
     }
-    staffDB.findOneAndUpdate({ _id: req.params['staffid'] || '' }, { $set: staff }).then(result => {
-      res.status(result.ok ? 201 : 404);
-      res.send(result.ok ? biz : undefined);
-    })
+    const result = await staffDB.findOneAndUpdate({ _id: req.params['staffid'] || '' }, { $set: staff });
+    res.status(result.ok ? 201 : 404);
+    res.send(result.ok ? biz : undefined);
 
     return next();
   })
 
-  server.del('/staff/:staffid', (req, res, next) => {
-    staffDB.deleteOne({ _id: req.params['staffid'] || '' }).then(() => {
-      res.status(204);
-      res.send();
-    })
+  server.del('/staff/:staffid', async (req, res, next) => {
+    await staffDB.deleteOne({ _id: req.params['staffid'] || '' });
+    res.status(204);
+    res.send();
 
     return next();
   })
