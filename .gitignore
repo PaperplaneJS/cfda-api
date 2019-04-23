@@ -1,6 +1,8 @@
 # Created by https://www.gitignore.io/api/node
 # Edit at https://www.gitignore.io/?templates=node
 
+dist/
+
 ### Node ###
 # Logs
 logs
@@ -92,5 +94,3 @@ typings/
 
 # next.js build output
 .next
-
-dist/

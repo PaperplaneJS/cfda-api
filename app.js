@@ -47,8 +47,8 @@ dbClient.connect().then(() => {
       s(server, db);
     })
 
-    server.listen(SERVER_PORT, SERVER_DOMAIN, function() {
-      console.log(`server[${server.name}] is open on [${SERVER_DOMAIN}:${SERVER_PORT}]`);
+    server.listen(SERVER_PORT, DEPLOY_HOST, function() {
+      console.log(`server[${server.name}] is open on [${DEPLOY_HOST}:${SERVER_PORT}]`);
     })
   })
 })

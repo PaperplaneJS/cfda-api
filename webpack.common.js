@@ -1,7 +1,5 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-const DefinePlugin = require('webpack/lib/DefinePlugin');
-const defineConfig = require('./server.config.js');
 
 module.exports = {
   entry: './app.js',
@@ -13,7 +11,6 @@ module.exports = {
   externals: [
     nodeExternals()
   ],
-  mode: 'production',
   module: {
     rules: [{
       test: /\.js$/,
@@ -25,8 +22,5 @@ module.exports = {
     alias: {
       '@': __dirname
     }
-  },
-  plugins: [
-    new DefinePlugin(defineConfig)
-  ]
+  }
 }
