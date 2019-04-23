@@ -1,4 +1,4 @@
-module.exports = function(len, radix) {
+module.exports =  function(len, radix) {
   let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
     uuid = [],
     i = 0;

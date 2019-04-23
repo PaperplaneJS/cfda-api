@@ -1,4 +1,4 @@
-import uuid from '@/utils/uuid';
+const uuid = require('@/utils/uuid');
 
 function cascadeDepList(deps) {
   function handleCascade(parent) {
