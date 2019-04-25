@@ -25,8 +25,8 @@ dbClient.connect().then(async () => {
   server.use(session({
     secret: config.key,
     resave: false,
-    saveUninitialized: true,
-    cookie: { httpOnly: false, domain: `.${SERVER_DOMAIN}` }
+    saveUninitialized: false,
+    cookie: { httpOnly: false, domain: SERVER_DOMAIN }
   }))
 
   server.use(function(req, res, next) {
