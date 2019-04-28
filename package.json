@@ -11,7 +11,6 @@
   "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
-    "@babel/runtime": "^7.4.3",
     "express-session": "^1.16.1",
     "mongodb": "^3.2.2",
     "restify": "^8.2.0",

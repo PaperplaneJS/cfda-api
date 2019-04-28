@@ -4,7 +4,7 @@ export default function(server, db) {
   const templateDB = db.collection('template');
 
   server.get('/template', async (req, res, next) => {
-    const result = await templateDB.find({}, { projection: { pwd: 0 } }).toArray();
+    const result = await templateDB.find({}, { projection: { content: 0 } }).toArray();
     res.send(result);
 
     return next();

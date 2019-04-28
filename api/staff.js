@@ -49,12 +49,13 @@ export default function(server, db) {
 
   server.put('/staff/:staffid', async (req, res, next) => {
     const staff = req.body;
-    if (staff.pwd) {
-      staff.pwd = sha256(staff.pwd);
-    }
-    const result = await staffDB.findOneAndUpdate({ _id: req.params['staffid'] || '' }, { $set: staff });
+
+    let current = await staffDB.findOne({ _id: req.params['staffid'] });
+    current = Object.assign(current, staff);
+
+    const result = await staffDB.findOneAndUpdate({ _id: req.params['staffid'] || '' }, { $set: current });
     res.status(result.ok ? 201 : 404);
-    res.send(result.ok ? biz : undefined);
+    res.send(result.ok ? staff : undefined);
 
     return next();
   })
