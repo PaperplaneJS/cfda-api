@@ -47,10 +47,9 @@ export default function(server, db) {
 
   server.put('/dep/:depid', async (req, res, next) => {
     const dep = req.body;
-    depDB.findOneAndUpdate({ _id: req.params['depid'] || '' }, { $set: dep }).then(result => {
-      res.status(result.ok ? 201 : 404);
-      res.send(result.ok ? dep : undefined);
-    })
+    const result = await depDB.findOneAndUpdate({ _id: req.params['depid'] || '' }, { $set: dep });
+    res.status(result.ok ? 201 : 404);
+    res.send(result.ok ? dep : undefined);
 
     return next();
   })
