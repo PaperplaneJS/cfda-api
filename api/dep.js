@@ -1,4 +1,4 @@
-import uuid from '@/utils/uuid';
+import uuid from '@/utils/uuid.js';
 import cascadeDepList from '@/utils/cascade';
 
 export default function(server, db) {

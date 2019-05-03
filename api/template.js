@@ -1,4 +1,4 @@
-import uuid from '@/utils/uuid';
+import uuid from '@/utils/uuid.js';
 
 export default function(server, db) {
   const templateDB = db.collection('template');

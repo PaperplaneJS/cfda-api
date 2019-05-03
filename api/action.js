@@ -1,4 +1,5 @@
-import sha256 from '@/utils/sha256';
+import sha256 from '@/utils/sha256.js';
+import { datetime } from '@/utils/date.js';
 
 export default function(server, db) {
   const staffDB = db.collection('staff');
@@ -13,7 +14,7 @@ export default function(server, db) {
         req.session.staff = staff._id;
         res.send(staff);
 
-        staffDB.findOneAndUpdate({ _id: staff._id }, { $set: { lastLogin: new Date().toLocaleString() } });
+        staffDB.findOneAndUpdate({ _id: staff._id }, { $set: { lastLogin: datetime() } });
 
       } else {
         res.status(401);
@@ -37,7 +38,7 @@ export default function(server, db) {
     staffDB.findOne({ _id: staffId }, { projection: { pwd: 0 } }).then(result => {
       if (result) {
         res.send(result);
-        staffDB.findOneAndUpdate({ _id: result._id }, { $set: { lastLogin: new Date().toLocaleString() } });
+        staffDB.findOneAndUpdate({ _id: result._id }, { $set: { lastLogin: datetime() } });
       } else {
         res.status(401);
         res.send();

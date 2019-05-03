@@ -1,5 +1,5 @@
-import uuid from '@/utils/uuid';
-import sha256 from '@/utils/sha256';
+import uuid from '@/utils/uuid.js';
+import sha256 from '@/utils/sha256.js';
 
 export default function(server, db) {
   const staffDB = db.collection('staff');

@@ -2,16 +2,22 @@ const DefinePlugin = require('webpack/lib/DefinePlugin');
 const common = require('./webpack.common.js');
 const merge = require('webpack-merge');
 
+const props = {
+  SERVER_NAME: 'CFDA-Server',
+  SERVER_DOMAIN: 'tx.a-c.fun',
+  DEPLOY_HOST: '10.105.116.11',
+  SERVER_PORT: '9000',
+  MONGODB_HOST: 'mongodb://localhost:27017',
+  DB_NAME: 'cfda'
+}
+
+Object.entries(props).forEach(([key, value]) => {
+  props[key] = JSON.stringify(value);
+})
+
 module.exports = merge(common, {
   mode: 'production',
   plugins: [
-    new DefinePlugin({
-      SERVER_NAME: JSON.stringify('CFDA-Server'),
-      SERVER_DOMAIN: JSON.stringify('tx.a-c.fun'),
-      DEPLOY_HOST: JSON.stringify('10.105.116.11'),
-      SERVER_PORT: JSON.stringify('9000'),
-      MONGODB_HOST: JSON.stringify('mongodb://localhost:27017'),
-      DB_NAME: JSON.stringify('cfda')
-    })
+    new DefinePlugin(props)
   ]
 })
