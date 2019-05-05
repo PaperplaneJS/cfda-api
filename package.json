@@ -5,12 +5,15 @@
   "main": "app.js",
   "scripts": {
     "dev": "webpack --config webpack.dev.js && node ./dist/dist.js",
+    "dev-build":"webpack --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
+    "@babel/runtime-corejs2": "^7.4.4",
+    "core-js": "^2.6.5",
     "express-session": "^1.16.1",
     "mongodb": "^3.2.2",
     "restify": "^8.2.0",
