@@ -2,7 +2,7 @@ import uuid from '@/utils/uuid.js';
 import cascadeDepList from '@/utils/cascade';
 
 export default function(server, db) {
-  const depDB = db.collection('department');
+  const depDB = db.collection('dep');
 
   server.get('/dep', async (req, res, next) => {
     const result = await depDB.find({}).toArray();

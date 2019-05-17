@@ -1,4 +1,5 @@
 import uuid from '@/utils/uuid.js';
+import ref from '@/utils/ref.js';
 
 export default function(server, db) {
   const planDB = db.collection('plan');
@@ -17,7 +18,10 @@ export default function(server, db) {
 
     if (req.query['posttask']) {
       const depId = req.query['posttask'];
-      result = result.filter(plan => plan.state < 4 && plan.post.includes(depId) && plan.recive.map(t => t.dep).includes(depId));
+      result = result.filter(plan => plan.post.includes(depId) && plan.recive.map(t => t.dep).includes(depId));
+      if (req.query['action'] === 'post') {
+        result = result.filter(plan => plan.state < 4);
+      }
     }
 
     res.send(result);
@@ -32,12 +36,11 @@ export default function(server, db) {
       cond['kind'] = req.query['kind'];
     }
 
-    const result = await planDB.findOne(cond);
+    const result = await planDB.aggregate([{ $match: cond }, ...ref(req)]).next();
     if (!result) {
       res.status(404);
     }
     res.send(result);
-
 
     return next();
   });

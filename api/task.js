@@ -2,6 +2,7 @@ import uuid from '@/utils/uuid.js';
 
 export default function(server, db) {
   const taskDB = db.collection('task');
+  const planDB = db.collection('plan');
 
   server.get(`/plan/:planid/task`, async (req, res, next) => {
     const result = await taskDB.find({ _plan: req.params['planid'] || '' }).toArray();
@@ -10,8 +11,8 @@ export default function(server, db) {
     return next();
   });
 
-  server.get(`/plan/:planid/task/:taskid`, async (req, res, next) => {
-    const result = await taskDB.findOne({ _id: req.params['taskid'], _plan: req.params['planid'] });
+  server.get(`/task/:taskid`, async (req, res, next) => {
+    const result = await taskDB.findOne({ _id: req.params['taskid'] });
     if (!result) {
       res.status(404);
     }
@@ -27,27 +28,27 @@ export default function(server, db) {
     postTaskInfo._plan = planid;
 
     await taskDB.insertOne(postTaskInfo);
+    let plan = await planDB.findOne({ _id: planid });
+    if (plan.state === 4) {
+      await planDB.findOneAndUpdate({ _id: planid }, {
+        $set: {
+          state: 3
+        }
+      });
+    }
+
     res.status(201);
     res.send(postTaskInfo);
 
     return next();
   });
 
-  server.put(`/plan/:planid/task/:taskid`, async (req, res, next) => {
+  server.put(`/task/:taskid`, async (req, res, next) => {
     const task = req.body;
-    const result = await taskDB.findOneAndUpdate({ _id: req.params['taskid'] || '', _plan: req.params['taskid'] || '' }, { $set: task });
+    const result = await taskDB.findOneAndUpdate({ _id: req.params['taskid'] || '' }, { $set: task });
     res.status(result.ok ? 201 : 404);
     res.send(result.ok ? task : undefined);
 
     return next();
   });
-
-  server.del(`/plan/:planid/task/:taskid`, async (req, res, next) => {
-    await taskDB.deleteOne({ _id: req.params['taskid'] || '', _plan: req.params['taskid'] || '' });
-    res.status(204);
-    res.send();
-
-    return next();
-  });
-
 }

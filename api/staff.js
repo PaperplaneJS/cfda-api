@@ -3,7 +3,7 @@ import sha256 from '@/utils/sha256.js';
 
 export default function(server, db) {
   const staffDB = db.collection('staff');
-  const depDB = db.collection('department');
+  const depDB = db.collection('dep');
 
   server.get('/staff', async (req, res, next) => {
     let cond = {};

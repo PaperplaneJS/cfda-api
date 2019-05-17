@@ -1,17 +1,24 @@
 import uuid from '@/utils/uuid.js';
+import ref from '@/utils/ref.js';
 
 export default function(server, db) {
   const bizDB = db.collection('biz');
 
   server.get('/biz', async (req, res, next) => {
-    const result = await bizDB.find({}).toArray();
+    let result = await bizDB.aggregate(ref(req)).toArray();
+    if (req.query['kind']) {
+      result = result.filter(t => t.kind === Number(req.query['kind']));
+    }
     res.send(result);
 
     return next();
   });
 
   server.get(`/biz/:bizid`, async (req, res, next) => {
-    const result = await bizDB.findOne({ _id: req.params['bizid'] });
+    const result = await bizDB.aggregate([{
+      $match: { _id: req.params['bizid'] }
+    }, ...ref(req)]).next();
+
     if (!result) {
       res.status(404);
     }
