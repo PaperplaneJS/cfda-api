@@ -4,8 +4,9 @@ const merge = require('webpack-merge')
 
 const props = {
   SERVER_NAME: 'CFDA-Server',
-  SERVER_DOMAIN: 'localhost',
-  DEPLOY_HOST: 'localhost',
+  SERVER_DOMAIN: 'tx.a-c.fun',
+  // DEPLOY_HOST: '10.105.116.11',
+  DEPLOY_HOST: '0.0.0.0',
   SERVER_PORT: '9000',
   MONGODB_HOST: 'mongodb://localhost:27017',
   DB_NAME: 'cfda'
@@ -16,6 +17,6 @@ Object.entries(props).forEach(([key, value]) => {
 })
 
 module.exports = merge(common, {
-  mode: 'development',
+  mode: 'production',
   plugins: [new DefinePlugin(props)]
 })

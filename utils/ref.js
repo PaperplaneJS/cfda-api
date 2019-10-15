@@ -1,11 +1,21 @@
 export default function(req, ...moreFieldNames) {
   if (!req.query['ref']) {
-    return [];
+    return []
   }
 
-  let aggregates = [];
-  let fieldNames = ['biz', 'staff', 'dep', 'law', 'template', 'sms', 'plan', 'task', 'record', ...moreFieldNames];
-  fieldNames.forEach(dbName => {
+  let aggregates = []
+  ;[
+    'biz',
+    'staff',
+    'dep',
+    'law',
+    'template',
+    'sms',
+    'plan',
+    'task',
+    'record',
+    ...moreFieldNames
+  ].forEach(dbName => {
     if (req.query['ref'].includes(dbName)) {
       aggregates.push({
         $lookup: {
@@ -14,11 +24,11 @@ export default function(req, ...moreFieldNames) {
           foreignField: '_id',
           as: `__${dbName}`
         }
-      });
+      })
 
-      aggregates.push({ "$unwind": `$__${dbName}` });
+      aggregates.push({ $unwind: `$__${dbName}` })
     }
   })
 
-  return aggregates;
+  return aggregates
 }

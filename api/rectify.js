@@ -1,3 +1,1 @@
-export default function(server, db) {
-
-}
+export default function(server, db) {}

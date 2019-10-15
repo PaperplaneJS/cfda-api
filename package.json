@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "webpack --config webpack.dev.js && node ./dist/dist.js",
-    "dev-build":"webpack --config webpack.dev.js",
+    "dev-build": "webpack --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"
   },
   "author": "",
@@ -29,5 +29,24 @@
     "webpack-dev-server": "^3.2.1",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "useBuiltIns": "usage",
+          "corejs": 2
+        }
+      ]
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-transform-runtime",
+        {
+          "corejs": 2
+        }
+      ]
+    ]
   }
 }
