@@ -18,9 +18,7 @@ script: "npm run ci-build"
 
 after_success:
   - sshpass -p ${PWD} scp -o stricthostkeychecking=no -r ./build/* ${DEPLOY_HOST}:${DEPLOY_PATH}/build/ -r ./package.json ${DEPLOY_HOST}:${DEPLOY_PATH}
-  - sshpass -p ${PWD} ssh ${DEPLOY_HOST}
-  - npm config set registry https://registry.npm.taobao.org
-  - npm i
+  - sshpass -p ${PWD} ssh ${DEPLOY_HOST} "npm config set registry https://registry.npm.taobao.org && npm i"
 
 skip_cleanup: true
 local_dir: build
