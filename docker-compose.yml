@@ -3,7 +3,7 @@ services:
   node:
     container_name: cfda
     image: node:12
-    user: root
+    user: ci
     working_dir: /home/node/app
     environment:
       - NODE_ENV=production
