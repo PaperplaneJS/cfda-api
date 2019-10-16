@@ -3,7 +3,7 @@ services:
   node:
     container_name: cfda
     image: node:12
-    user: ci
+    user: root
     working_dir: /home/node/app
     environment:
       - NODE_ENV=production
@@ -13,4 +13,4 @@ services:
       - 9000
     ports:
       - 9000:9000
-    command: npm run start
+    command: npm run prod

@@ -1,5 +1,8 @@
 # 食药监局 CFDA 项目后端
 
+## 持续集成服务状态
+[![Build Status](https://travis-ci.com/s1n1an/cfda-server.svg?token=4oD5rfvVVLMZSXYyxUky&branch=master)](https://travis-ci.com/s1n1an/cfda-server)  
+
 ## 介绍
 本项目是为食药监局[前台系统](https://github.com/s1n1an/cfda-client)提供 API 接口而准备  
 Github 克隆或下载本项目后，使用前需对`src/env/env.js`配置文件进行配置  
