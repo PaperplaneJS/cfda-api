@@ -1,6 +1,7 @@
 {
   "name": "shipinjuser",
   "version": "1.0.0",
+  "main": "app.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development npx nodemon build/app.js",
     "prod": "cross-env NODE_ENV=production npx nodemon build/app.js",
