@@ -17,8 +17,8 @@ cache: npm
 script: "npm run ci-build"
 
 after_success:
-  - sshpass -p ${PWD} scp -o stricthostkeychecking=no -r ./build/* ${DEPLOY_HOST}:${DEPLOY_PATH}/build/ -r ./package.json ${DEPLOY_HOST}:${DEPLOY_PATH}
-  - sshpass -p ${PWD} ssh ${DEPLOY_HOST} "npm i"
+  - sshpass -p ${PWD} scp -o stricthostkeychecking=no -r ./build/* ${DEPLOY_HOST}:${DEPLOY_PATH}/build/
+  - sshpass -p ${PWD} scp -o stricthostkeychecking=no -r ./package.json ${DEPLOY_HOST}:${DEPLOY_PATH}/
 
 skip_cleanup: true
 local_dir: build
