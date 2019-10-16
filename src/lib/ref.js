@@ -1,9 +1,9 @@
-export default function(req, ...moreFieldNames) {
+export const ref = (req, ...moreFieldNames) => {
   if (!req.query['ref']) {
     return []
   }
 
-  let aggregates = []
+  const aggregates = []
   ;[
     'biz',
     'staff',
@@ -32,3 +32,5 @@ export default function(req, ...moreFieldNames) {
 
   return aggregates
 }
+
+export default { ref }

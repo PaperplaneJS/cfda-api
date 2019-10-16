@@ -1,11 +1,14 @@
-import uuid from '@/utils/uuid.js'
-import sha256 from '@/utils/sha256.js'
+import { getDb } from '../env/db.js'
+import { GET, POST, PUT, DELETE } from '../lib/api.js'
+import { sha256 } from '../lib/hash.js'
+import { uuid } from '../lib/uuid.js'
 
-export default function(server, db) {
-  const staffDB = db.collection('staff')
-  const depDB = db.collection('dep')
+const staffDB = getDb().collection('staff')
+const depDB = getDb().collection('dep')
 
-  server.get('/staff', async (req, res, next) => {
+export default class {
+  @GET('/staff')
+  async getAllStaff(req, res, next) {
     let cond = {}
     if (req.query['dep']) {
       cond['dep'] = req.query['dep']
@@ -14,17 +17,16 @@ export default function(server, db) {
       let deps = await depDB.find({ _rel: req.query['dep'] }).toArray()
       deps = deps.map(t => t._id)
 
-      let result = await staffDB.find({ dep: { $in: deps } }, { projection: { pwd: 0 } }).toArray()
-      res.send(result)
+      res.send(await staffDB.find({ dep: { $in: deps } }, { projection: { pwd: 0 } }).toArray())
     } else {
-      const result = await staffDB.find(cond, { projection: { pwd: 0 } }).toArray()
-      res.send(result)
+      res.send(await staffDB.find(cond, { projection: { pwd: 0 } }).toArray())
     }
 
     return next()
-  })
+  }
 
-  server.get(`/staff/:staffid`, async (req, res, next) => {
+  @GET('/staff/:staffid')
+  async getSingleStaff(req, res, next) {
     const result = await staffDB.findOne({ _id: req.params['staffid'] }, { projection: { pwd: 0 } })
     if (!result) {
       res.status(404)
@@ -32,9 +34,10 @@ export default function(server, db) {
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.post('/staff', async (req, res, next) => {
+  @POST('/staff')
+  async createStaff(req, res, next) {
     const postStaffInfo = req.body
     postStaffInfo._id = uuid()
     postStaffInfo.pwd = sha256(postStaffInfo.pwd)
@@ -44,9 +47,10 @@ export default function(server, db) {
     res.send(postStaffInfo)
 
     return next()
-  })
+  }
 
-  server.put('/staff/:staffid', async (req, res, next) => {
+  @PUT('/staff/:staffid')
+  async updateStaff(req, res, next) {
     const staff = req.body
 
     let current = await staffDB.findOne({ _id: req.params['staffid'] })
@@ -60,13 +64,14 @@ export default function(server, db) {
     res.send(result.ok ? staff : undefined)
 
     return next()
-  })
+  }
 
-  server.del('/staff/:staffid', async (req, res, next) => {
+  @DELETE('/staff/:staffid')
+  async deleteStaff(req, res, next) {
     await staffDB.deleteOne({ _id: req.params['staffid'] || '' })
     res.status(204)
     res.send()
 
     return next()
-  })
+  }
 }

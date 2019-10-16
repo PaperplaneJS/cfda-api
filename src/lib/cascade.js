@@ -1,4 +1,4 @@
-export default function(deps) {
+export const cascade = deps => {
   function handleCascade(parent) {
     const children = deps.filter(
       dep => dep._rel.length === parent._rel.length + 1 && dep._rel.includes(parent._id)
@@ -15,3 +15,5 @@ export default function(deps) {
 
   return cascade
 }
+
+export default { cascade }

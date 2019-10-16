@@ -1,9 +1,12 @@
-import uuid from '@/utils/uuid.js'
+import { getDb } from '../env/db.js'
+import { GET, POST } from '../lib/api.js'
+import { uuid } from '../lib/uuid.js'
 
-export default function(server, db) {
-  const riskDB = db.collection('risk')
+const riskDB = getDb().collection('risk')
 
-  server.get(`/risk`, async (req, res, next) => {
+export default class {
+  @GET('/risk')
+  async getAllRisk(req, res, next) {
     let cond = {}
     if (req.query['year']) {
       cond['year'] = Number(req.query['year'])
@@ -12,9 +15,10 @@ export default function(server, db) {
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.get(`/risk/:bizid`, async (req, res, next) => {
+  @GET('/risk/:bizid')
+  async getSingleRisk(req, res, next) {
     let cond = { _biz: req.params['bizid'] }
     if (req.query['year']) {
       cond['year'] = Number(req.query['year'])
@@ -29,9 +33,10 @@ export default function(server, db) {
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.post(`/risk`, async (req, res, next) => {
+  @POST('/risk')
+  async createRisk(req, res, next) {
     const postRiskInfo = req.body
     postRiskInfo._id = uuid()
 
@@ -39,5 +44,5 @@ export default function(server, db) {
     res.send(postRiskInfo)
 
     return next()
-  })
+  }
 }

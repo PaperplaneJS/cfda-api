@@ -1,17 +1,21 @@
-import uuid from '@/utils/uuid.js'
+import { getDb } from '../env/db.js'
+import { GET, POST, PUT } from '../lib/api.js'
+import { uuid } from '../lib/uuid.js'
 
-export default function(server, db) {
-  const taskDB = db.collection('task')
-  const planDB = db.collection('plan')
+const taskDB = getDb().collection('task')
+const planDB = getDb().collection('plan')
 
-  server.get(`/plan/:planid/task`, async (req, res, next) => {
+export default class {
+  @GET('/plan/:planid/task')
+  async getTaskByPlan(req, res, next) {
     const result = await taskDB.find({ _plan: req.params['planid'] || '' }).toArray()
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.get(`/task/:taskid`, async (req, res, next) => {
+  @GET('/task/:taskid')
+  async getSingleTask(req, res, next) {
     const result = await taskDB.findOne({ _id: req.params['taskid'] })
     if (!result) {
       res.status(404)
@@ -19,9 +23,10 @@ export default function(server, db) {
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.post(`/plan/:planid/task`, async (req, res, next) => {
+  @POST('/plan/:planid/task')
+  async createTask(req, res, next) {
     const planid = req.params['planid']
     const postTaskInfo = req.body
     postTaskInfo._id = uuid()
@@ -30,23 +35,17 @@ export default function(server, db) {
     await taskDB.insertOne(postTaskInfo)
     let plan = await planDB.findOne({ _id: planid })
     if (plan.state === 4) {
-      await planDB.findOneAndUpdate(
-        { _id: planid },
-        {
-          $set: {
-            state: 3
-          }
-        }
-      )
+      await planDB.findOneAndUpdate({ _id: planid }, { $set: { state: 3 } })
     }
 
     res.status(201)
     res.send(postTaskInfo)
 
     return next()
-  })
+  }
 
-  server.put(`/task/:taskid`, async (req, res, next) => {
+  @PUT('/task/:taskid')
+  async updateTask(req, res, next) {
     const task = req.body
     const result = await taskDB.findOneAndUpdate(
       { _id: req.params['taskid'] || '' },
@@ -56,5 +55,5 @@ export default function(server, db) {
     res.send(result.ok ? task : undefined)
 
     return next()
-  })
+  }
 }

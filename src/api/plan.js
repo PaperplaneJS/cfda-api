@@ -1,10 +1,13 @@
-import uuid from '@/utils/uuid.js'
-import ref from '@/utils/ref.js'
+import { getDb } from '../env/db.js'
+import { GET, POST, PUT, DELETE } from '../lib/api.js'
+import { uuid } from '../lib/uuid.js'
+import { ref } from '../lib/ref.js'
 
-export default function(server, db) {
-  const planDB = db.collection('plan')
+const planDB = getDb().collection('plan')
 
-  server.get('/plan', async (req, res, next) => {
+export default class {
+  @GET('/plan')
+  async getAllPlan(req, res, next) {
     let cond = {}
     if (req.query['kind']) {
       cond['kind'] = req.query['kind']
@@ -34,10 +37,11 @@ export default function(server, db) {
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.get(`/plan/:planid`, async (req, res, next) => {
-    let cond = {}
+  @GET('/plan/:planid')
+  async getSinglePlan(req, res, next) {
+    const cond = {}
     cond['_id'] = req.params['planid'] || ''
     if (req.query['kind']) {
       cond['kind'] = req.query['kind']
@@ -50,9 +54,10 @@ export default function(server, db) {
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.post('/plan', async (req, res, next) => {
+  @POST('/plan')
+  async createPlan(req, res, next) {
     const plan = req.body
     plan._id = uuid()
 
@@ -61,25 +66,29 @@ export default function(server, db) {
     res.send(plan)
 
     return next()
-  })
+  }
 
-  server.put('/plan/:planid', async (req, res, next) => {
+  @PUT('/plan/:planid')
+  async updatePlan(req, res, next) {
     const plan = req.body
     const result = await planDB.findOneAndUpdate(
       { _id: req.params['planid'] || '' },
       { $set: plan }
     )
+
     res.status(result.ok ? 201 : 404)
     res.send(result.ok ? plan : undefined)
 
     return next()
-  })
+  }
 
-  server.del('/plan/:planid', async (req, res, next) => {
+  @DELETE('/plan/:planid')
+  async deletePlan(req, res, next) {
     await planDB.deleteOne({ _id: req.params['planid'] || '' })
+
     res.status(204)
     res.send()
 
     return next()
-  })
+  }
 }

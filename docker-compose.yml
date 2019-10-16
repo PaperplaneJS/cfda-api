@@ -1,0 +1,18 @@
+version: '2'
+services:
+  node:
+    container_name: cfda
+    image: node:12
+    user: root
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/home/node/app
+    expose:
+      - 27017
+      - 9000
+    ports:
+      - 27017:27017
+      - 9000:9000
+    command: npm run start

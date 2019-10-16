@@ -1,23 +1,28 @@
-import uuid from '@/utils/uuid.js'
+import { getDb } from '../env/db.js'
+import { GET, POST, PUT, DELETE } from '../lib/api.js'
+import { uuid } from '../lib/uuid.js'
 
-export default function(server, db) {
-  const templateDB = db.collection('template')
+const templateDB = getDb().collection('template')
 
-  server.get('/template', async (req, res, next) => {
+export default class {
+  @GET('/template')
+  async getAllTemplate(req, res, next) {
     const result = await templateDB.find({}, { projection: { content: 0 } }).toArray()
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.get(`/template/:templateid`, async (req, res, next) => {
+  @GET('/template/:templateid')
+  async getSingleTemplate(req, res, next) {
     const result = await templateDB.findOne({ _id: req.params['templateid'] })
     res.send(result)
 
     return next()
-  })
+  }
 
-  server.post('/template', async (req, res, next) => {
+  @POST('/template')
+  async createTemplate(req, res, next) {
     const postTemplateInfo = req.body
     postTemplateInfo._id = uuid()
 
@@ -26,9 +31,10 @@ export default function(server, db) {
     res.send(postTemplateInfo)
 
     return next()
-  })
+  }
 
-  server.put('/template/:templateid', async (req, res, next) => {
+  @PUT('/template/:templateid')
+  async updateTemplate(req, res, next) {
     const template = req.body
     const result = await templateDB.findOneAndUpdate(
       { _id: req.params['templateid'] || '' },
@@ -38,13 +44,14 @@ export default function(server, db) {
     res.send(result.ok ? template : undefined)
 
     return next()
-  })
+  }
 
-  server.del('/template/:templateid', async (req, res, next) => {
+  @DELETE('/template/:templateid')
+  async deleteTemplate(req, res, next) {
     await templateDB.deleteOne({ _id: req.params['templateid'] || '' })
     res.status(204)
     res.send()
 
     return next()
-  })
+  }
 }

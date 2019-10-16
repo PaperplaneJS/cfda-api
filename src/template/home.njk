@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CFDA · 所有API一览</title>
+  </head>
+  <body>
+    <h1>CFDA · 所有API一览</h1>
+    <ul>
+      {% for item in apiList %}
+        <li>
+          {{item.method | upper}} · {{item.path}}
+        </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
