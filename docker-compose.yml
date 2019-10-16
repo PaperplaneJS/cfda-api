@@ -10,9 +10,7 @@ services:
     volumes:
       - ./:/home/node/app
     expose:
-      - 27017
       - 9000
     ports:
-      - 27017:27017
       - 9000:9000
     command: npm run start
