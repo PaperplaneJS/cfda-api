@@ -1,5 +1,3 @@
-import { str } from './str.js'
-
 const allApi = []
 const _api = method => path => (target, name, { value }) => {
   allApi.push({ path, method, func: value })

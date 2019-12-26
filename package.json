@@ -8,6 +8,7 @@
     "dev-build": "babel src -d build -w --copy-files",
     "ci-build": "babel src -d build --copy-files"
   },
+  "type": "module",
   "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",

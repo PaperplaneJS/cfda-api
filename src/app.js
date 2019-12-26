@@ -60,7 +60,7 @@ server.use(plugins.bodyParser())
     return next()
   })
 
-  server.listen(SERVER_PORT, DEPLOY_HOST, function() {
+  server.listen(SERVER_PORT, DEPLOY_HOST, () => {
     console.log(`服务器[${server.name}]已经于[${DEPLOY_HOST}:${SERVER_PORT}]成功开启.`)
   })
 })()
