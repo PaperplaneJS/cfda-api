@@ -13,7 +13,7 @@ export const devConfig = {
   SERVER_DOMAIN: 'localhost',
   DEPLOY_HOST: 'localhost',
   SERVER_PORT: '9000',
-  MONGODB_HOST: 'mongodb://localhost:27017',
+  MONGODB_HOST: 'mongodb://root:qwer1234@localhost:27017',
   DB_NAME: 'cfda'
 }
 

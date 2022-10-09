@@ -8,7 +8,6 @@
     "dev-build": "babel src -d build -w --copy-files",
     "ci-build": "babel src -d build --copy-files"
   },
-  "type": "module",
   "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
@@ -29,7 +28,8 @@
     "@babel/preset-env": "^7.5.5",
     "babel-plugin-transform-decorators": "^6.24.1",
     "cross-env": "^5.2.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "npx": "^10.2.2"
   },
   "babel": {
     "presets": [
