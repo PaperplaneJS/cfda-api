@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development npx nodemon build/app.js",
     "prod": "cross-env NODE_ENV=production npx nodemon build/app.js",
+    "cd": "babel src -d build --copy-files && cross-env NODE_ENV=production npx nodemon build/app.js",
     "dev-build": "babel src -d build -w --copy-files",
     "ci-build": "babel src -d build --copy-files"
   },

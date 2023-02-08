@@ -5,4 +5,4 @@ WORKDIR /app
 ADD . /app/
 RUN yarn --registry=https://registry.npmmirror.com
 
-CMD [ "yarn", "prod" ]
+CMD [ "yarn", "cd" ]
