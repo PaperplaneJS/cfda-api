@@ -11,7 +11,7 @@ networks:
 services:
   cfda-be:
     container_name: cfda-be
-    image: node:12
+    image: paperplanecc/cfda-be:latest
     restart: always
     networks:
       - default-app
