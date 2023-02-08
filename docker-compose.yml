@@ -1,16 +1,18 @@
-version: '2'
+version: '3'
+
+networks:
+  default-app:
+    name: default-app
+    external: true
+  default-db-mongo:
+    name: default-db-mongo
+    external: true
+
 services:
-  node:
-    container_name: cfda
+  cfda-be:
+    container_name: cfda-be
     image: node:12
-    user: root
-    working_dir: /home/node/app
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - ./:/home/node/app
-    expose:
-      - 9000
-    ports:
-      - 9000:9000
-    command: npx run prod
+    restart: always
+    networks:
+      - default-app
+      - default-db-mongo

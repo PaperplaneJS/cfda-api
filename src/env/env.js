@@ -19,11 +19,10 @@ export const devConfig = {
 
 export const prodConfig = {
   SERVER_NAME: 'CFDA-Server',
-  SERVER_DOMAIN: 'tx.a-c.fun',
-  // DEPLOY_HOST: '10.105.116.11',
+  SERVER_DOMAIN: 'cfda.paperplane.cc',
   DEPLOY_HOST: '0.0.0.0',
   SERVER_PORT: '9000',
-  MONGODB_HOST: 'mongodb://localhost:27017',
+  MONGODB_HOST: 'mongodb://root:qwer1234@mongo:27017',
   DB_NAME: 'cfda'
 }
 
