@@ -19,7 +19,7 @@ export const devConfig = {
 
 export const prodConfig = {
   SERVER_NAME: 'CFDA-Server',
-  SERVER_DOMAIN: 'cfda.paperplane.cc',
+  SERVER_DOMAIN: 'paperplane.cc',
   DEPLOY_HOST: '0.0.0.0',
   SERVER_PORT: '9000',
   MONGODB_HOST: 'mongodb://root:qwer1234@mongo:27017',
