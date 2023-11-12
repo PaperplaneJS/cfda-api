@@ -1,7 +1,7 @@
 # 食药监局 CFDA 项目后端
 
 ## 持续集成服务状态
-[![Build Status](https://travis-ci.com/s1n1an/cfda-server.svg?token=4oD5rfvVVLMZSXYyxUky&branch=master)](https://travis-ci.com/s1n1an/cfda-server)  
+[![Build Status](https://drone.paperplane.cc/api/badges/jia-niang/cfda-be/status.svg)](https://drone.paperplane.cc/jia-niang/cfda-be)  
 
 ## 介绍
 本项目是为食药监局[前台系统](https://github.com/s1n1an/cfda-client)提供 API 接口而准备  
