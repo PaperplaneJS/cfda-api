@@ -16,6 +16,8 @@ steps:
       registry: git.paperplane.cc
       purge: false
       mirror: https://docker.mirrors.sjtug.sjtu.edu.cn
+      add_host:
+        - 'git.paperplane.cc:host-gateway'
 
   - name: stop-service
     image: appleboy/drone-ssh
