@@ -8,13 +8,14 @@ steps:
   - name: build
     image: plugins/docker
     settings:
-      username: paperplanecc
+      username: jia-niang
       password:
-        from_secret: DOCKER_PASSWORD
-      repo: paperplanecc/cfda-be
+        from_secret: GITEA_DOCKER_PUBLISH_TOKEN
+      repo: jia-niang/cfda-api
       tags: latest
-      mirror: https://mirror.ccs.tencentyun.com
-      registry: docker.io
+      registry: git.paperplane.cc
+      purge: false
+      mirror: https://docker.mirrors.sjtug.sjtu.edu.cn
 
   - name: stop-service
     image: appleboy/drone-ssh
@@ -28,8 +29,8 @@ steps:
       script:
         - cd /root/project-config/cfda
         - docker compose down || true
-        - docker rm paperplanecc/cfda-be || true
-        - docker image rm paperplanecc/cfda-be:latest || true
+        - docker rm git.paperplane.cc/jia-niang/cfda-api || true
+        - docker image rm git.paperplane.cc/jia-niang/cfda-api:latest || true
   
   - name: deploy
     image: appleboy/drone-ssh
