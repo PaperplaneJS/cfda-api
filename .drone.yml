@@ -11,7 +11,7 @@ steps:
       username: jia-niang
       password:
         from_secret: GITEA_DOCKER_PUBLISH_TOKEN
-      repo: jia-niang/cfda-api
+      repo: git.paperplane.cc/jia-niang/cfda-api
       tags: latest
       registry: git.paperplane.cc
       purge: false
