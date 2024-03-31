@@ -15,20 +15,34 @@ steps:
       tags: latest
       mirror: https://mirror.ccs.tencentyun.com
       registry: docker.io
-  
-  - name: deploy
-    image: drillster/drone-rsync
+
+  - name: stop-service
+    image: appleboy/drone-ssh
     settings:
-      hosts: [ "paperplane.cc" ]
-      user: ubuntu
+      host:
+        - 'paperplane.cc'
+      username: root
       key:
         from_secret: DEPLOY_SSH_PRIKEY
-      source: ./docker-compose.yml
-      target: /home/ubuntu/cfda-be-docker-compose.yml
+      command_timeout: 5m
       script:
-        - docker compose -f /home/ubuntu/cfda-be-docker-compose.yml down
-        - docker image rm paperplanecc/cfda-be:latest
-        - docker compose -f /home/ubuntu/cfda-be-docker-compose.yml up -d
+        - cd /root/project-config/cfda
+        - docker compose down || true
+        - docker rm paperplanecc/cfda-be || true
+        - docker image rm paperplanecc/cfda-be:latest || true
+  
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 'paperplane.cc'
+      username: root
+      key:
+        from_secret: DEPLOY_SSH_PRIKEY
+      command_timeout: 5m
+      script:
+        - cd /root/project-config/cfda
+        - docker compose up -d
 
 trigger:
   branch:

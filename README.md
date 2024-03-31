@@ -1,10 +1,10 @@
 # 食药监局 CFDA 项目后端
 
 ## 持续集成服务状态
-[![Build Status](https://drone.paperplane.cc/api/badges/jia-niang/cfda-be/status.svg)](https://drone.paperplane.cc/jia-niang/cfda-be)  
+[![Build Status](https://drone.paperplane.cc/api/badges/jia-niang/cfda-api/status.svg)](https://drone.paperplane.cc/jia-niang/cfda-api)  
 
 ## 介绍
-本项目是为食药监局[前台系统](https://github.com/s1n1an/cfda-client)提供 API 接口而准备  
+本项目是为食药监局[前台系统](https://git.paperplane.cc/jia-niang/cfda-app)提供 API 接口而准备  
 Github 克隆或下载本项目后，使用前需对`src/env/env.js`配置文件进行配置  
 
 ## 配置项
