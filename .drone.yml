@@ -11,9 +11,9 @@ steps:
       username: jia-niang
       password:
         from_secret: GITEA_DOCKER_PUBLISH_TOKEN
-      repo: gitea/jia-niang/cfda-api
+      repo: git.paperplane.cc/jia-niang/cfda-api
       tags: latest
-      registry: gitea
+      registry: git.paperplane.cc
       purge: false
       mirror: https://docker.mirrors.sjtug.sjtu.edu.cn
 
@@ -29,8 +29,8 @@ steps:
       script:
         - cd /root/project-config/cfda
         - docker compose down || true
-        - docker rm gitea/jia-niang/cfda-api || true
-        - docker image rm gitea/jia-niang/cfda-api:latest || true
+        - docker rm git.paperplane.cc/jia-niang/cfda-api || true
+        - docker image rm git.paperplane.cc/jia-niang/cfda-api:latest || true
   
   - name: deploy
     image: appleboy/drone-ssh
