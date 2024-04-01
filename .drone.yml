@@ -5,19 +5,18 @@ workspace:
   path: /source
 
 steps:
-  - name: build
-    image: plugins/docker
-    settings:
-      username: jia-niang
-      password:
-        from_secret: GITEA_DOCKER_PUBLISH_TOKEN
-      repo: git.paperplane.cc/jia-niang/cfda-api
-      tags: latest
-      registry: git.paperplane.cc
-      purge: false
-      mirror: https://docker.mirrors.sjtug.sjtu.edu.cn
+  - name: build-image
+    image: docker:dind
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+      - name: imagedir
+        path: /imagedir
+    commands:
+      - docker build -t paperplanecc/cfda-api:latest .
+      - docker image save paperplanecc/cfda-api:latest > /imagedir/cfda-api.tar
 
-  - name: stop-service
+  - name: prepare-docker
     image: appleboy/drone-ssh
     settings:
       host:
@@ -27,10 +26,10 @@ steps:
         from_secret: DEPLOY_SSH_PRIKEY
       command_timeout: 5m
       script:
-        - cd /root/project-config/cfda
-        - docker compose down || true
-        - docker rm git.paperplane.cc/jia-niang/cfda-api || true
-        - docker image rm git.paperplane.cc/jia-niang/cfda-api:latest || true
+        - docker stop cfda-api || true
+        - docker rm cfda-api || true
+        - docker image rm paperplanecc/cfda-api:latest || true
+        - docker image load < /root/images-export/cfda-api.tar
   
   - name: deploy
     image: appleboy/drone-ssh
@@ -44,6 +43,14 @@ steps:
       script:
         - cd /root/project-config/cfda
         - docker compose up -d
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
+  - name: imagedir
+    host:
+      path: /root/images-export
 
 trigger:
   branch:
