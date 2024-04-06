@@ -10,26 +10,22 @@ steps:
     volumes:
       - name: dockersock
         path: /var/run/docker.sock
-      - name: imagedir
-        path: /imagedir
+      - name: yarncache
+        path: /usr/local/share/.cache/yarn
     commands:
-      - docker build -t paperplanecc/cfda-api:latest .
-      - docker image save paperplanecc/cfda-api:latest > /imagedir/cfda-api.tar
+      - docker build --progress plain --compress -t paperplanecc/cfda-api:ci .
 
   - name: prepare-docker
-    image: appleboy/drone-ssh
-    settings:
-      host:
-        - 'paperplane.cc'
-      username: root
-      key:
-        from_secret: DEPLOY_SSH_PRIKEY
-      command_timeout: 5m
-      script:
-        - docker stop cfda-api || true
-        - docker rm cfda-api || true
-        - docker image rm paperplanecc/cfda-api:latest || true
-        - docker image load < /root/images-export/cfda-api.tar
+    image: docker:dind
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker stop cfda-api || true
+      - docker rm cfda-api || true
+      - docker image rm paperplanecc/cfda-api:latest || true
+      - docker tag paperplanecc/cfda-api:ci paperplanecc/cfda-api:latest || true
+      - docker image rm paperplanecc/cfda-api:ci || true
   
   - name: deploy
     image: appleboy/drone-ssh
@@ -48,9 +44,9 @@ volumes:
   - name: dockersock
     host:
       path: /var/run/docker.sock
-  - name: imagedir
+  - name: yarncache
     host:
-      path: /root/images-export
+      path: /root/.yarncache
 
 trigger:
   branch:
